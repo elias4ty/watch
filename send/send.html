@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>send</title>
+  <style media="screen">
+      *{
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+      }
+
+      body{
+        width: 100%;
+        background: url('./index.jpg');
+        color: #282C34;
+      }
+
+      section{
+        width: 70%;
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      form{
+        width: 80%;
+        margin: 50px auto;
+        height: 50px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      form span{
+        text-align: center;
+      }
+
+      input{
+        width: 100px;
+        height: 30px;
+        border-radius: 5px;
+      }
+
+      select{
+        border-radius: 5px;
+        height: 30px;
+      }
+
+      table{
+        width: 90%;
+        margin: 150px auto 50px;
+        border: 1px solid #F2F2F2;
+        border-collapse:collapse;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+
+      th,td{
+        text-align: center;
+        height:35px;
+        border: 1px solid #F2F2F2;
+        width: 13%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      caption{
+        font-size: 28px;
+        height: 40px;
+        margin-bottom: 20px;
+      }
+  </style>
+</head>
+<body>
+  <section>
+    <form method="post" id="form">
+        <div>
+          <span>错误类型：</span>
+          <select name="select" id="select">
+            <option value="0" selected>Random</option>
+            <option value="1">SyntaxError</option>
+            <option value="2">ReferenceError</option>
+            <option value="3">RangeError</option>
+            <option value="4">TypeError</option>
+            <option value="5">URLError</option>
+            <option value="6">EvalError</option>
+            <option value="7">Script</option>
+          </select>
+        </div>
+        <input type="button" name="button" value="点击发送" id="single_button">
+        <input type="button" name="button" value="批量发送" id="batch_button">
+    </form>
+  </section>
+
+  <table>
+      <caption>错误信息列表</caption>
+      <tbody>
+        <tr>
+          <th>类型</th>
+          <th>日期</th>
+          <th>文件名</th>
+          <th>信息</th>
+          <th>行号</th>
+          <th>列号</th>
+          <th>路径</th>
+        </tr>
+      </tbody>
+  </table>
+
+  <script type="text/javascript">
+      var type = [
+        'SyntaxError',
+        'ReferenceError',
+        'RangeError',
+        'TypeError',
+        'URLError',
+        'EvalError',
+        'Script'
+      ];
+
+      var errObj = [],items = [];
+
+
+      function print(){
+          var tr = document.createElement('tr'),
+              table = document.getElementsByTagName('tbody')[0];
+
+          for(var e in errObj){
+              var td = document.createElement('td');
+              td.innerHTML = errObj[e][1]
+              tr.appendChild(td)
+          }
+          table.appendChild(tr);
+      }
+
+      function sendErr(e) {
+
+          if(Object.prototype.toString.call(e) !== '[object Array]')
+              throw("[err] sendErr : argument 'e' must be a Array")
+
+          console.dir(e)
+
+          // var img = new Image,errArr=[],errUrl='http://err.sogou.com:3000/catcherr?';
+          //
+          // for(var i in e){
+          //     var arg = [i,'=',e[i]].join('')
+          //     errArr.push(arg)
+          // }
+          // errUrl += errArr.join('&')
+          //
+          // img.src = errUrl;
+      }
+
+      var sb = document.getElementById('single_button'),
+          bb = document.getElementById('batch_button');
+
+      function random(num){
+          return Math.ceil(Math.random() * num)
+      }
+
+      function wrapper(select){
+          var y = Number(select) == 0 ? random(7) : Number(select);
+
+          errObj = [
+              ['type',type[y-1]],
+              ['Date',new Date().toLocaleString()],
+              ['filename',['www.error.com/',random(100),'/html'].join('')],
+              ['message','Uncaught '+ type[y-1]],
+              ['lineno',random(1000)],
+              ['colno',random(200)]
+          ];
+
+          if(Number(y) === 7 ){
+              errObj.push(['src',['/resource/',random(100),'/js'].join('')])
+          }
+
+          sendErr(errObj)
+      }
+
+      sb.addEventListener('click',function () {
+         var select = document.getElementById('select').value;
+         wrapper(select)
+         print();
+      })
+
+      bb.addEventListener('click',function(){
+         for(var i=0;i<=100;i++){
+             wrapper(random(7))
+         }
+      })
+  </script>
+</body>
+</html>

@@ -19,17 +19,18 @@
       }
 
       section{
-        width: 70%;
+        width: 100%;
         position: fixed;
         top: 0;
         z-index: 100;
         left: 0;
         right: 0;
         margin: 0 auto;
+        background: #A5D9E4;
       }
 
       form{
-        width: 80%;
+        width: 60%;
         margin: 50px auto;
         height: 50px;
         display: flex;
@@ -65,10 +66,6 @@
         text-align: center;
         height:35px;
         border: 1px solid #F2F2F2;
-        width: 13%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
 
       caption{
@@ -76,6 +73,7 @@
         height: 40px;
         margin-bottom: 20px;
       }
+
   </style>
 </head>
 <body>
@@ -101,6 +99,15 @@
 
   <table>
       <caption>错误信息列表</caption>
+      <colgroup>
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+      </colgroup>
       <tbody>
         <tr>
           <th>类型</th>
@@ -140,6 +147,16 @@
           table.appendChild(tr);
       }
 
+      function formatterDate() {
+          let date = new Date(),
+              dataArr = [
+                [date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),
+                [date.getHours(),date.getMinutes(),date.getSeconds()].join(':')
+              ].join(' ')
+
+          return dataArr
+      }
+
       function sendErr(e) {
 
           if(Object.prototype.toString.call(e) !== '[object Array]')
@@ -147,15 +164,15 @@
 
           console.dir(e)
 
-          // var img = new Image,errArr=[],errUrl='http://err.sogou.com:3000/catcherr?';
-          //
-          // for(var i in e){
-          //     var arg = [i,'=',e[i]].join('')
-          //     errArr.push(arg)
-          // }
-          // errUrl += errArr.join('&')
-          //
-          // img.src = errUrl;
+          var img = new Image,errArr=[],errUrl='http://localhost:5555/sendErr?';
+
+          for(var i in e){
+              var arg = [e[i][0],'=',encodeURIComponent(e[i][1])].join('')
+              errArr.push(arg)
+          }
+          errUrl += errArr.join('&')
+
+          img.src = errUrl;
       }
 
       var sb = document.getElementById('single_button'),
@@ -170,7 +187,7 @@
 
           errObj = [
               ['type',type[y-1]],
-              ['Date',new Date().toLocaleString()],
+              ['Date',formatterDate()],
               ['filename',['www.error.com/',random(100),'/html'].join('')],
               ['message','Uncaught '+ type[y-1]],
               ['lineno',random(1000)],

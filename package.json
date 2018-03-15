@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/elias4ty/watch/issues"
   },
-  "homepage": "https://github.com/elias4ty/watch#readme"
+  "homepage": "https://github.com/elias4ty/watch#readme",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "mysql": "^2.15.0",
+    "nunjucks": "^3.1.2"
+  }
 }

@@ -3,7 +3,8 @@ const koa = require('koa'),
       app = new koa(),
       router =  new Router(),
       watchRou = require('./back/router/watch'),
-      mysql = require('mysql');
+      mysql = require('mysql'),
+      Render = require('./render');
 
 const connection = mysql.createConnection({
   host : 'localhost',
@@ -15,6 +16,7 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.context.sql = connection;
+app.context.nun = Render.render();
 
 watchRou.routerInit(router);
 

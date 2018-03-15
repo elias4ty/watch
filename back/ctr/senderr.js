@@ -14,11 +14,15 @@ exports.getMessage = function(){
         if(err){
             console.log('Insert error----',err.message)
             res.status = 404;
-            res.body = 'Insert error'
+            res.message = 'Insert error'
+            res.body = 'failed'
         }else{
             console.log('Insert success')
             res.status = 200;
-            res.body = 'Insert success'
+            res.message = 'Insert success'
+            res.body = 'success'
         }
+
+        await next()
     }
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://gw.alipayobjects.com/os/antv/assets/g2/3.0.4/g2.min.js"></script>
+
+  <title>柱状图</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    html,body{
+      width: 100%;
+      height: 100%;
+    }
+
+    body{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #main{
+      width: 45%;
+    }
+</style>
+<body>
+
+<div id="main"></div>
+<script type="text/javascript">
+
+    window.data = JSON.parse(decodeURIComponent(`{{msg}}`));
+
+    var chart = new G2.Chart({
+        id : 'main',
+        forceFit : true
+    })
+
+    chart.source(window.data)
+
+    chart.legend(false);
+    chart.interval().position('type*count').color('type').label('count')
+
+    chart.render()
+</script>
+</body>
+</html>

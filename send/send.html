@@ -10,6 +10,7 @@
         margin: 0;
         padding: 0;
         font-size: 18px;
+        text-decoration: none;
       }
 
       body{
@@ -42,12 +43,19 @@
         text-align: center;
       }
 
-      input{
+      input,a{
         width: 100px;
         height: 30px;
         border-radius: 5px;
       }
 
+      a{
+        color: #282C34;
+        background: #DDDDDD;
+        border: 1px solid #F2F2F2;
+        text-align: center;
+        line-height: 30px;
+      }
       select{
         border-radius: 5px;
         height: 30px;
@@ -94,6 +102,7 @@
         </div>
         <input type="button" name="button" value="点击发送" id="single_button">
         <input type="button" name="button" value="批量发送" id="batch_button">
+        <a href="http://localhost:5555/interval" target="_blank">图形统计</a>
     </form>
   </section>
 

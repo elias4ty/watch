@@ -11,12 +11,14 @@
         padding: 0;
         font-size: 18px;
         text-decoration: none;
+        outline:none
       }
 
       body{
         width: 100%;
-        background: url('./index.jpg');
-        color: #282C34;
+        color: #4F51DC;
+        background-color: #F2F3F8;
+        font-family: Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
       }
 
       section{
@@ -27,7 +29,7 @@
         left: 0;
         right: 0;
         margin: 0 auto;
-        background: #A5D9E4;
+        background-color: #F2F3F8;
       }
 
       form{
@@ -45,35 +47,75 @@
 
       input,a{
         width: 100px;
-        height: 30px;
+        height: 40px;
         border-radius: 5px;
+        color: #FFFFFF;
+        border: none;
+        line-height: 40px;
+        background-color: #4F51DC;
       }
 
       a{
-        color: #282C34;
-        background: #DDDDDD;
         border: 1px solid #F2F2F2;
         text-align: center;
-        line-height: 30px;
       }
+
       select{
-        border-radius: 5px;
-        height: 30px;
+        border-radius: 3px;
+        height: 40px;
+        line-height: 40px;
+        border: none;
+        font-size: 20px;
+        text-align: center;
+        color: #4F51DC;
+        background-color: #FFFFFF;
+        width: 160px;
+        padding: 0 10%;
       }
 
       table{
-        width: 90%;
+        width: 80%;
         margin: 150px auto 50px;
-        border: 1px solid #F2F2F2;
-        border-collapse:collapse;
         word-wrap: break-word;
         word-break: break-all;
+        border-collapse:separate;
+        border-spacing:0 10px;
+      }
+
+      *::selection{
+          background-color: #4F51DC;
+          color: #FFFFFF;
+      }
+
+
+      option{
+        text-align:center;
+      }
+
+      tr{
+          background-color: #FFFFFF;
+          height: 60px;
+          line-height: 60px;
+          color: #494949;
+          border-radius: 10px;
+          transition: height 0.3s;
+      }
+
+      .haha:hover{
+        box-shadow: 0px 0px 20px 0px #8D8BA2;
+        height: 80px;
       }
 
       th,td{
         text-align: center;
-        height:35px;
-        border: 1px solid #F2F2F2;
+      }
+
+      th,caption{
+        color: #BDBFCA;
+      }
+
+      th{
+          background-color: #F2F3F8;
       }
 
       caption{
@@ -82,9 +124,21 @@
         margin-bottom: 20px;
       }
 
+      .zhezhao{
+        position: fixed;
+        right: 0;
+        left : 0;
+        top: 40%;
+        margin: 0 auto;
+        width: 500px;
+        height: 300px;
+        background-image: url('./none.jpg');
+        opacity: 0.7;
+      }
   </style>
 </head>
 <body>
+  <div class="zhezhao"></div>
   <section>
     <form method="post" id="form">
         <div>
@@ -150,9 +204,11 @@
 
           for(var e in errObj){
               var td = document.createElement('td');
-              td.innerHTML = errObj[e][1]
+              td.innerHTML = errObj[e][1];
               tr.appendChild(td)
           }
+
+          tr.setAttribute('class','haha');
           table.appendChild(tr);
       }
 
@@ -205,15 +261,20 @@
 
           if(Number(y) === 7 ){
               errObj.push(['src',['/resource/',random(100),'/js'].join('')])
+          }else {
+            errObj.push(['src','none'])
           }
 
           sendErr(errObj)
       }
 
       sb.addEventListener('click',function () {
-         var select = document.getElementById('select').value;
+         var select = document.getElementById('select').value,
+             img = document.getElementsByClassName('zhezhao')[0];
+
          wrapper(select)
          print();
+         img.style.display = 'none';
       })
 
       bb.addEventListener('click',function(){

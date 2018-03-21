@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script src="https://gw.alipayobjects.com/os/antv/assets/g2/3.0.4/g2.min.js"></script>
+  <script src="/static/lib/laydate/laydate.js" charset="utf-8"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/assets/data-set/0.8.5/data-set.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
 
   <title>柱状图</title>
 </head>
@@ -12,6 +15,8 @@
     *{
         margin: 0;
         padding: 0;
+        list-style: none;
+        text-decoration: none;
     }
 
     html,body{
@@ -20,33 +25,409 @@
     }
 
     body{
+      display: grid;
+      grid-template-columns: 274px auto 15%;
+      grid-template-rows: 10% auto;
+      grid-template-areas:
+        'first second second'
+        'third forth fivth';
+    }
+
+    #main1{
+      grid-area: first;
+      background: #4F51DC;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    #main{
-      width: 45%;
+    #main1 p {
+      text-align: center;
+      font-size: 18px;
+      color: #FFFFFF;
+    }
+
+    #main2{
+      grid-area: second;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F2F4;
+      color: #3F434D;
+      font-size: 20px;
+    }
+
+    #main2 a{
+      color : #3F434D;
+      transition: color .1s;
+    }
+
+    #main2 a:hover{
+      color : #4F51DC;
+    }
+
+    #main3{
+      grid-area: third;
+      background: #293540;
+      position: relative;
+    }
+
+    #main4{
+      grid-area: forth;
+      background: #F3F4F6;
+    }
+
+    #main5{
+      grid-area: fivth;
+      background: #FFFFFF;
+      overflow-y: auto;
+    }
+
+    #main5::-webkit-scrollbar,body::-webkit-scrollbar {/*滚动条整体样式*/
+      width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+      height: 1px;
+    }
+    #main5::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      background: #F3F4F6;
+    }
+    #main5::-webkit-scrollbar-track,body::-webkit-scrollbar-track {/*滚动条里面轨道*/
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      background: #EDEDED;
+    }
+
+    #main2 .tongji{
+      float: left;
+    }
+
+    #main2 .back{
+      float: right;
+    }
+
+    #main2 .bar{
+      width: 90%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content:space-between;
+      height: 100%;
+    }
+
+    #main3 ul {
+      width: 100%;
+      padding: 0 30px;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+
+    #main3 li a{
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      font-size: 17px;
+      border-bottom: 1px solid #767B7F;
+      transition: color .2s,font-size .2s;
+      color: #767B7F;
+      display: block;
+    }
+
+    #main3 li a:hover,#main3 li .active{
+      background: rgba(118,123,127,0.3);
+      font-size: 19px;
+      color: #FFFFFF;
+    }
+
+    #main3 figure{
+      background: #FFFFFF;
+    }
+
+    #calendar{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 35%;
+    }
+
+    #chart{
+      width: 80%;
+      margin: 60px auto;
+    }
+
+    .big{
+      width: 80%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #FFFFFF;
+      margin: 80px auto;
+      height: 120px;
+    }
+
+    .big .bar{
+      flex-basis : 33.33%;
+    }
+
+    .big .bar span{
+        display: block;
+        color: #3F434D;
+        text-align: center;
+    }
+
+    .big .bar span:nth-child(1){
+        font-size: 20px;
+        font-family: sans-serif;
+        margin-bottom: 10px;
+    }
+
+    .big .bar span:nth-child(2){
+        font-size: 40px;
+        font-family: cursive;
+    }
+
+    *::selection{
+      background: #4F51DC;
+      color:#FFFFFF;
+    }
+
+    #main5 section{
+      box-sizing: border-box;
+      width: 80%;
+      padding: 30px 25px;
+      border-bottom: 1px solid #F1F2F4;
+      transform: translateY(-20px);
+      opacity: 0;
+      margin: 0 auto;
+      transition : transform .3s,opacity .3s,scrollHeight .3s;
+    }
+
+    #main5 section .title{
+      color : #5052D9;
+      font-size: 16px;
+      margin-bottom: 22px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    #main5 section .filename,time{
+      color: #B8C2C4;
+      font-size: 15px;
+    }
+
+    #main5 section .filename{
+      margin-bottom: 20px;
+      word-wrap:break-word;
+    }
+
+    #main5 .new{
+      width: 80%;
+      box-sizing: border-box;
+      margin: 0 auto;
+      height: 50px;
+      line-height:50px;
+      color: #3F434D;
+      font-size: 20px;
+      text-align: center;
+      border-bottom: 1px solid #F3F4F6;
     }
 </style>
 <body>
 
-<div id="main"></div>
+<div id="main1">
+  <p>图形选择</p>
+</div>
+<div id="main2">
+   <div class="bar">
+     <p class="tongji">图像统计</p>
+     <a class="back" href="/">返回</a>
+   </div>
+</div>
+<div id="main3">
+  <ul>
+    <li><a type="interval" href="javascript:void(0)" class="active">柱状图</a></li>
+    <li><a type="pie" href="javascript:void(0)">圆饼图</a></li>
+    <li><a type="line" href="javascript:void(0)">点线图</a></li>
+  </ul>
+
+   <div id="calendar">
+     <input type="text" class="demo-input" placeholder="请选择日期" id="ok" style="display:none">
+   </div>
+</div>
+<div id="main4">
+  <figure id="chart"></figure>
+  <div class="big">
+    <p class="bar">
+      <span>查询日期</span>
+      <span id="date">{{date}}</span>
+    </p>
+    <p class="bar">
+      <span>报错总数</span>
+      <span id="sum">{{sum}}</span>
+    </p>
+    <p class="bar">
+      <span>类型总数</span>
+      <span id="len">{{len}}</span>
+    </p>
+  </div>
+</div>
+<div id="main5">
+  <p class="new">新消息列表</p>
+  <div class="list"></div>
+</div>
+
 <script type="text/javascript">
+
+    laydate.render({
+      elem: '#ok',
+      show: true,
+      showBottom : false,
+      theme : '#293540',
+      lang : 'en',
+      done : function(date){
+          dateChange(date);
+      },
+      ready : function(){
+        var date = document.getElementById('layui-laydate1'),
+            parent = document.getElementById('calendar');
+
+        parent.appendChild(date);
+      }
+    });
 
     window.data = JSON.parse(decodeURIComponent(`{{msg}}`));
 
-    var chart = new G2.Chart({
-        id : 'main',
-        forceFit : true
+    var chart = null,chartType = '';
+
+    chartChange('interval')
+
+    var ul = document.querySelector('#main3 ul');
+
+    ul.addEventListener('click',function(e){
+        var ac = ul.getElementsByClassName('active')[0];
+        ac.classList.remove('active');
+        e.target.classList.add('active');
+        e.stopPropagation();
+
+        var type = e.target.getAttribute('type');
+        chart.destroy();
+        chartChange(type);
     })
 
-    chart.source(window.data)
+    function chartChange(t){
 
-    chart.legend(false);
-    chart.interval().position('type*count').color('type').label('count')
+        chartType = t;
 
-    chart.render()
+        chart = new G2.Chart({
+            id : 'chart',
+            forceFit : true,
+            background : {
+                fill : '#FFFFFF'
+            }
+        })
+
+      if(t == 'line'){
+          chart.source(window.data)
+          chart.point().position('type*count').label('count').shape('circle')
+          chart.line().position('type*count').size(3);
+          chart.scale('count',{
+            min : 0
+          })
+      }else if(t == 'interval'){
+          chart.source(window.data)
+          chart.interval().position('type*count').color('type').label('count');
+          chart.legend(true)
+      }else {
+        let ds = new DataSet(),
+            dv = ds.createView().source(window.data);
+
+        dv.transform({
+          type : 'percent',
+          field : 'count',
+          dimension : 'type',
+          as : 'bing'
+        })
+
+        chart.source(dv);
+
+        chart.tooltip({
+          showTitle : false,
+          itemTpl : '<li>{item} : {bing}</li>'
+        })
+
+        chart.coord('theta');
+        chart.intervalStack().position('bing').color('type').label('bing',{
+            formatter:(b,i) =>{
+               b = (b*100).toFixed(2)+'%'
+               return i.point.type+' : '+b
+            }
+        }).tooltip('type*bing',(item,bing) => {
+            bing = (bing*100).toFixed(2)+'%';
+
+            return {item,bing}
+        }).style({
+          lineWidth :2,
+          stroke : '#fff'
+        })
+      }
+
+      chart.render()
+    }
+
+    var socket = io('http://localhost:3000',{
+                      "transports":['websocket', 'polling']
+                  }); // ws 的服务器
+
+    socket.on('toast',function(msg){
+        toast(msg);
+    })
+
+    function toast(msg){
+        var sec = document.createElement('section'),
+            par = document.querySelector('.list');
+        sec.innerHTML = ['<p class="title">',msg[0][1],'</p>',
+            '<p class="filename">',msg[2][1],'</p>',
+            '<time>',msg[1][1],'</time>'].join('');
+
+        par.firstElementChild ? par.insertBefore(sec,par.firstElementChild)
+                              : par.appendChild(sec);
+
+        setTimeout(function () {
+            sec.style['transform'] = 'translateY(0px)';
+            sec.style['opacity'] = '1';
+        },0)
+    }
+
+    function dateChange(date) {
+        var xhr = new XMLHttpRequest(),
+            data = new FormData();
+
+        data.append('date',date);
+        xhr.open('post','http://mychart.com/queryDate');
+        xhr.send(data);
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4){
+                if(xhr.status == 200){
+                    var r = JSON.parse(xhr.responseText),
+                        sum = r.sum,
+                        date = r.date,
+                        len = r.len,
+                        sumDom = document.getElementById('sum'),
+                        lenDom = document.getElementById('len'),
+                        dateDom = document.getElementById('date');
+
+                    window.data = r.result;
+                    chart.destroy();
+                    chartChange(chartType);
+                    sumDom.innerHTML = sum;
+                    lenDom.innerHTML = len;
+                    dateDom.innerHTML = date;
+                }else{
+                    console.log('xhr failed')
+                }
+            }
+        }
+    }
 </script>
 </body>
 </html>

@@ -132,10 +132,12 @@
         margin: 0 auto;
         width: 500px;
         height: 300px;
-        background-image: url('./none.jpg');
+        background-image: url('/static/resource/images/none.jpg');
         opacity: 0.7;
       }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+
 </head>
 <body>
   <div class="zhezhao"></div>
@@ -151,12 +153,12 @@
             <option value="4">TypeError</option>
             <option value="5">URLError</option>
             <option value="6">EvalError</option>
-            <option value="7">Script</option>
+            <option value="7">ScriptError</option>
           </select>
         </div>
         <input type="button" name="button" value="点击发送" id="single_button">
         <input type="button" name="button" value="批量发送" id="batch_button">
-        <a href="http://localhost:5555/interval" target="_blank">图形统计</a>
+        <a href="/interval" target="_blank">图形统计</a>
     </form>
   </section>
 
@@ -192,11 +194,19 @@
         'TypeError',
         'URLError',
         'EvalError',
-        'Script'
+        'ScriptError'
       ];
 
-      var errObj = [],items = [];
+      /**
+       * 在浏览器可能有些不支持websocket所以通过polling进行握手，再升级到websocket协议
+       * 所以要配置 transports
+       */
+      var socket = io('http://localhost:3000',{
+          "transports":['websocket', 'polling']
+      });
 
+
+      var errObj = [],items = [];
 
       function print(){
           var tr = document.createElement('tr'),
@@ -210,13 +220,20 @@
 
           tr.setAttribute('class','haha');
           table.appendChild(tr);
+
+          socket.emit('insert',errObj)
       }
 
       function formatterDate() {
           let date = new Date(),
               dataArr = [
-                [date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),
-                [date.getHours(),date.getMinutes(),date.getSeconds()].join(':')
+                [date.getFullYear(),
+                    date.getMonth() < 9 ? ('0' + (date.getMonth()+1)): (date.getMonth()+1),
+                    date.getDate() < 10 ? ('0' + date.getDate()): date.getDate()].join('-'),
+                [
+                    date.getHours() < 10 ? ('0' + date.getHours()): date.getHours(),
+                    date.getMinutes() < 10 ? ('0' + date.getMinutes()): date.getMinutes(),
+                    date.getSeconds() < 10 ? ('0' + date.getSeconds()): date.getSeconds()].join(':')
               ].join(' ')
 
           return dataArr
@@ -229,7 +246,7 @@
 
           console.dir(e)
 
-          var img = new Image,errArr=[],errUrl='http://localhost:5555/sendErr?';
+          var img = new Image,errArr=[],errUrl='http://mychart.com/sendErr?';
 
           for(var i in e){
               var arg = [e[i][0],'=',encodeURIComponent(e[i][1])].join('')

@@ -49,7 +49,7 @@
         ready: function(a) {
             var i = "laydate"
               , r = ""
-              , o = (e ? "modules/laydate/" : "theme/") + "default/laydate.css?v=" + n.v + r;
+              , o = 'laydate.css';
             return e ? layui.addcss(o, a, i) : t.link(o, a, i),
             this
         }
@@ -246,7 +246,7 @@
     ,
     C.prototype.remove = function(e) {
         return this.each(function(t, n) {
-            e ? n.removeChild(e) : n.parentNode.removeChild(n)
+            // e ? n.removeChild(e) : n.parentNode.removeChild(n)
         })
     }
     ,
